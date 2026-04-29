@@ -1,0 +1,136 @@
+name: build-samples
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  schedule:
+    # 04:00 UTC every Monday -- catches NuGet package drift between releases.
+    - cron: "0 4 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  build:
+    name: Build ${{ matrix.chapter }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        chapter:
+          - ch01-foundations
+          - ch02-extensions-ai
+          - ch03-rag
+          - ch04-agent-framework
+          - ch05-mcp
+          - ch06-production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.x"
+
+      - name: Discover projects
+        id: discover
+        shell: bash
+        run: |
+          mapfile -t projects < <(find samples/${{ matrix.chapter }} -name '*.csproj' | sort)
+          if [ "${#projects[@]}" -eq 0 ]; then
+            echo "::warning::No .csproj files under samples/${{ matrix.chapter }}"
+          fi
+          printf '  - %s\n' "${projects[@]}"
+          {
+            echo "projects<<EOF"
+            printf '%s\n' "${projects[@]}"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Restore
+        shell: bash
+        run: |
+          while IFS= read -r project; do
+            [ -z "$project" ] && continue
+            echo "::group::restore $project"
+            dotnet restore "$project"
+            echo "::endgroup::"
+          done <<< "${{ steps.discover.outputs.projects }}"
+
+      - name: Build
+        shell: bash
+        run: |
+          while IFS= read -r project; do
+            [ -z "$project" ] && continue
+            echo "::group::build $project"
+            dotnet build "$project" --no-restore -c Release
+            echo "::endgroup::"
+          done <<< "${{ steps.discover.outputs.projects }}"
+
+      - name: Test (only test projects)
+        shell: bash
+        run: |
+          while IFS= read -r project; do
+            [ -z "$project" ] && continue
+            if grep -q "Microsoft.NET.Test.Sdk" "$project"; then
+              echo "::group::test $project"
+              dotnet test "$project" --no-build -c Release \
+                --logger "trx;LogFileName=test-results.trx" \
+                --results-directory "${{ runner.temp }}/test-results/${{ matrix.chapter }}"
+              echo "::endgroup::"
+            fi
+          done <<< "${{ steps.discover.outputs.projects }}"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.chapter }}
+          path: ${{ runner.temp }}/test-results/${{ matrix.chapter }}
+          if-no-files-found: ignore
+          retention-days: 14
+
+  # Optional manual smoke tests against live providers.
+  # Triggers only on workflow_dispatch so live API tokens are never spent on
+  # ordinary push/PR builds. Configure the secrets in the repo Settings before
+  # creating tests/Smoke.
+  smoke-tests-live:
+    name: Smoke tests (live providers)
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    needs: build
+    env:
+      OPENAI_API_KEY:        ${{ secrets.OPENAI_API_KEY }}
+      AZURE_OPENAI_ENDPOINT: ${{ secrets.AZURE_OPENAI_ENDPOINT }}
+      AZURE_OPENAI_KEY:      ${{ secrets.AZURE_OPENAI_KEY }}
+      ANTHROPIC_API_KEY:     ${{ secrets.ANTHROPIC_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.x"
+      - name: Run smoke tests (if present)
+        shell: bash
+        run: |
+          if [ -d tests/Smoke ]; then
+            dotnet test tests/Smoke -c Release \
+              --logger "trx;LogFileName=smoke.trx" \
+              --results-directory "${{ runner.temp }}/smoke-results"
+          else
+            echo "tests/Smoke does not exist yet -- nothing to run."
+          fi
+      - name: Upload smoke results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-results
+          path: ${{ runner.temp }}/smoke-results
+          if-no-files-found: ignore
+          retention-days: 14
