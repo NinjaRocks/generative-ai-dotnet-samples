@@ -1,36 +1,4 @@
-using Microsoft.Agents.AI.Workflows;
-
-WorkflowBuilder builder = new();
-
-var upper = builder.AddExecutor(Executor.From<string, string>(
-    s => s.ToUpperInvariant(),
-    name: "uppercase"));
-
-var reverse = builder.AddExecutor(Executor.From<string, string>(
-    s => new string(s.Reverse().ToArray()),
-    name: "reverse"));
-
-builder.SetStartExecutor(upper);
-builder.AddEdge(upper, reverse);
-builder.SetOutputExecutor(reverse);
-
-Workflow workflow = builder.Build();
-
-var result = await workflow.RunAsync("Hello, agent!");
-Console.WriteLine($"Result: {result.Output}");
-
-Console.WriteLine();
-Console.WriteLine("Streaming events:");
-
-await foreach (WorkflowEvent evt in workflow.RunStreamingAsync("Streaming demo"))
-{
-    switch (evt)
-    {
-        case WorkflowOutputEvent output:
-            Console.WriteLine($"  output: {output.Data}");
-            break;
-        case ExecutorCompletedEvent completed:
-            Console.WriteLine($"  executor done: {completed.ExecutorName}");
-            break;
-    }
-}
+// API-update-pending: this sample is being updated for the Microsoft.Agents.AI 1.x
+// and ModelContextProtocol 1.x API surface. See README.md and the Program.cs.book.txt
+// (and any other *.cs.book.txt) files for the original code as written for the manuscript.
+Console.WriteLine("Sample placeholder. See README.md and Program.cs.book.txt for the original implementation.");

@@ -1,0 +1,24 @@
+# .NET build outputs
+bin/
+obj/
+out/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+
+# JetBrains
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Tool caches
+.dotnet/
+
+# Local secrets
+*.pfx
+secrets.json

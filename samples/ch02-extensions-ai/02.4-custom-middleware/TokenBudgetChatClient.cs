@@ -6,7 +6,7 @@ public sealed class TokenBudgetChatClient(IChatClient inner, int dailyBudget) : 
 {
     private readonly Lock _gate = new();
     private DateOnly _windowStart = DateOnly.FromDateTime(DateTime.UtcNow);
-    private int _consumed;
+    private long _consumed;
 
     public override async Task<ChatResponse> GetResponseAsync(
         IEnumerable<ChatMessage> messages,
@@ -51,7 +51,7 @@ public sealed class TokenBudgetChatClient(IChatClient inner, int dailyBudget) : 
 
     private void Account(UsageDetails? usage)
     {
-        if (usage?.TotalTokenCount is not int total) return;
+        if (usage?.TotalTokenCount is not long total) return;
         lock (_gate)
         {
             _consumed += total;

@@ -9,31 +9,31 @@ var builder = Host.CreateApplicationBuilder(args);
 // A flaky test endpoint: half the requests return 503.
 int callCount = 0;
 
-builder.Services.AddHttpClient("flaky-ai", c => c.BaseAddress = new Uri("https://example.invalid/"))
-    .AddStandardResilienceHandler(o =>
-    {
-        o.Retry.MaxRetryAttempts = 3;
-        o.Retry.Delay = TimeSpan.FromMilliseconds(200);
-        o.Retry.UseJitter = true;
-        o.Retry.BackoffType = DelayBackoffType.Exponential;
-        o.AttemptTimeout.Timeout = TimeSpan.FromSeconds(2);
-        o.TotalRequestTimeout.Timeout = TimeSpan.FromSeconds(15);
-        o.CircuitBreaker.FailureRatio = 0.5;
-        o.CircuitBreaker.MinimumThroughput = 4;
-        o.CircuitBreaker.SamplingDuration = TimeSpan.FromSeconds(30);
-    })
-    .AddHttpMessageHandler(() => new SimulatedFlakyHandler(() => Interlocked.Increment(ref callCount)));
+var http = builder.Services.AddHttpClient("flaky-ai", c => c.BaseAddress = new Uri("https://example.invalid/"));
+http.AddStandardResilienceHandler(o =>
+{
+    o.Retry.MaxRetryAttempts = 3;
+    o.Retry.Delay = TimeSpan.FromMilliseconds(200);
+    o.Retry.UseJitter = true;
+    o.Retry.BackoffType = DelayBackoffType.Exponential;
+    o.AttemptTimeout.Timeout = TimeSpan.FromSeconds(2);
+    o.TotalRequestTimeout.Timeout = TimeSpan.FromSeconds(15);
+    o.CircuitBreaker.FailureRatio = 0.5;
+    o.CircuitBreaker.MinimumThroughput = 4;
+    o.CircuitBreaker.SamplingDuration = TimeSpan.FromSeconds(30);
+});
+http.AddHttpMessageHandler(() => new SimulatedFlakyHandler(() => Interlocked.Increment(ref callCount)));
 
 using var host = builder.Build();
 await host.StartAsync();
 
 var factory = host.Services.GetRequiredService<IHttpClientFactory>();
-var http = factory.CreateClient("flaky-ai");
+var client = factory.CreateClient("flaky-ai");
 
 try
 {
     Console.WriteLine("Sending request through the standard resilience pipeline...");
-    var response = await http.GetAsync("/v1/something");
+    var response = await client.GetAsync("/v1/something");
     Console.WriteLine($"Status: {response.StatusCode} (after {callCount} HTTP attempt(s))");
 }
 catch (Exception ex)

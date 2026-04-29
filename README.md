@@ -97,6 +97,36 @@ These samples need **only** Ollama (no API keys, no cloud calls):
 
 The rest assume an OpenAI / Anthropic / Azure OpenAI key.
 
+## API-update-pending samples
+
+Microsoft's `Microsoft.Agents.AI` and `ModelContextProtocol` packages went stable (1.x) with substantial API changes from the 0.3.x previews used while the manuscript was being written. To keep the build green, the following samples currently ship a one-line placeholder `Program.cs` and the original code is preserved alongside as `Program.cs.book.txt` (and any other `*.cs.book.txt` files in the same folder).
+
+These need a manuscript-aligned API rewrite (target: `Microsoft.Agents.AI` 1.3 + `ModelContextProtocol` 1.2):
+
+- `samples/ch04-agent-framework/04.2.1-hello-agent/`
+- `samples/ch04-agent-framework/04.2.4-anthropic-agents/`
+- `samples/ch04-agent-framework/04.3-persistent-session/`
+- `samples/ch04-agent-framework/04.4-tools-and-approval/`
+- `samples/ch04-agent-framework/04.5-agent-middleware/`
+- `samples/ch04-agent-framework/04.6.3-text-processing-walkthrough/`
+- `samples/ch04-agent-framework/04.6.7-content-workflow/`
+- `samples/ch04-agent-framework/04.7-a2a-server/`
+- `samples/ch04-agent-framework/04.8-agent-with-mcp/`
+- `samples/ch05-mcp/05.3.1-stdio-transport/`
+- `samples/ch05-mcp/05.3.2-sse-transport/`
+- `samples/ch05-mcp/05.3.3-streamable-http/`
+- `samples/ch05-mcp/05.4-mcp-client/`
+- `samples/ch05-mcp/05.6.3-mcp-agent-factory/`
+- `samples/ch05-mcp/cached-mcp-tool-provider/`
+
+Notable shape changes to plan around when updating:
+
+- `ChatClientAgentOptions` no longer has `Instructions` / `Tools` -- both move under `ChatOptions` / `ChatHistoryProvider`.
+- `AgentThread` -> `AgentSession`; `AgentRunResponse` -> `AgentResponse`; `AIAgent.GetNewThread()` is gone.
+- `WorkflowBuilder` requires a starting executor in its constructor; `Executor.From` / `Executor.FromAsync` were renamed.
+- `ModelContextProtocol.Client` and `ModelContextProtocol.Server` are no longer separate packages -- everything is in `ModelContextProtocol` / `ModelContextProtocol.Core`.
+- `WithHttpServerTransport(...)` / `HttpTransportType` were replaced by `WithHttpTransport(...)` (streamable HTTP only).
+
 ## Versioning and tags
 
 | Tag | Meaning |
