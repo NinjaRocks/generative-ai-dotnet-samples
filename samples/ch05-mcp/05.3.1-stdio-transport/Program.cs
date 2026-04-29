@@ -1,19 +1,4 @@
-using Microsoft.Extensions.Hosting;
-
-var builder = Host.CreateApplicationBuilder(args);
-
-builder.Services
-    .AddMcpServer()
-    .WithStdioServerTransport()
-    .WithToolsFromAssembly();
-
-// stderr is the only log stream that's safe to write to over stdio --
-// stdout is reserved for JSON-RPC protocol traffic.
-builder.Logging.ClearProviders();
-builder.Logging.AddSimpleConsole(o =>
-{
-    o.LogToStandardErrorThreshold = LogLevel.Trace;
-    o.SingleLine = true;
-});
-
-await builder.Build().RunAsync();
+// API-update-pending: this sample is being updated for the Microsoft.Agents.AI 1.x
+// and ModelContextProtocol 1.x API surface. See README.md and the Program.cs.book.txt
+// (and any other *.cs.book.txt) files for the original code as written for the manuscript.
+Console.WriteLine("Sample placeholder. See README.md and Program.cs.book.txt for the original implementation.");

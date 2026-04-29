@@ -26,7 +26,6 @@ builder.Services.AddOpenTelemetry()
     .WithTracing(t => t
         .AddSource(ServiceName)
         .AddSource("Microsoft.Extensions.AI")
-        .AddConsoleExporter()
         .AddOtlpExporter()); // honors OTEL_EXPORTER_OTLP_ENDPOINT (default http://localhost:4317)
 
 using var host = builder.Build();

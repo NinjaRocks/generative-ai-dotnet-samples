@@ -4,6 +4,8 @@ Companion code for **Generative AI in .NET**, Chapter 4 section 4.7.3 ("Exposing
 
 Hosts a `ChatClientAgent` behind `MapA2A("/a2a")` so any A2A-compatible client (Python, .NET, TypeScript) can call it over HTTP using the agent card protocol.
 
+> **Preview package**: this sample depends on `Microsoft.Agents.AI.A2A`, currently published as a **preview** on NuGet. The pin in `Directory.Packages.props` is `1.3.0-preview.260423.1`. Bump it as new previews ship.
+
 ## Run it
 
 ```bash

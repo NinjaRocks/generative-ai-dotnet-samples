@@ -4,35 +4,42 @@
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
 
-  <ItemGroup Label="Microsoft.Extensions.AI">
-    <PackageVersion Include="Microsoft.Extensions.AI" Version="9.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.AI.Abstractions" Version="9.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.AI.OpenAI" Version="9.0.0-preview" />
-    <PackageVersion Include="Microsoft.Extensions.AI.Ollama" Version="9.0.0-preview" />
-    <PackageVersion Include="Microsoft.Extensions.AI.AzureAIInference" Version="9.0.0-preview" />
+  <!--
+    Versions verified against the live NuGet feed on 2026-04-29.
+    Re-run "dotnet package search PKG_NAME exact-match" periodically and bump
+    these floors. See Manuscript/user-action-plan.md (Critical-5) for cadence.
+  -->
+
+  <ItemGroup Label="Microsoft.Extensions.AI (10.x)">
+    <PackageVersion Include="Microsoft.Extensions.AI" Version="10.5.0" />
+    <PackageVersion Include="Microsoft.Extensions.AI.Abstractions" Version="10.5.0" />
+    <PackageVersion Include="Microsoft.Extensions.AI.OpenAI" Version="10.5.0" />
+    <PackageVersion Include="Microsoft.Extensions.AI.Evaluation" Version="10.5.0" />
+    <PackageVersion Include="Microsoft.Extensions.AI.Evaluation.Quality" Version="10.5.0" />
   </ItemGroup>
 
-  <ItemGroup Label="Microsoft Agent Framework">
-    <PackageVersion Include="Microsoft.Agents.AI" Version="0.3.0-preview" />
-    <PackageVersion Include="Microsoft.Agents.AI.OpenAI" Version="0.3.0-preview" />
-    <PackageVersion Include="Microsoft.Agents.AI.Workflows" Version="0.3.0-preview" />
-    <PackageVersion Include="Microsoft.Agents.AI.AzureAI" Version="0.3.0-preview" />
-    <PackageVersion Include="Microsoft.Agents.AI.A2A" Version="0.3.0-preview" />
-    <PackageVersion Include="Microsoft.Agents.AI.Hosting" Version="0.3.0-preview" />
+  <ItemGroup Label="Microsoft Agent Framework (1.x)">
+    <PackageVersion Include="Microsoft.Agents.AI" Version="1.3.0" />
+    <PackageVersion Include="Microsoft.Agents.AI.Abstractions" Version="1.3.0" />
+    <PackageVersion Include="Microsoft.Agents.AI.OpenAI" Version="1.3.0" />
+    <PackageVersion Include="Microsoft.Agents.AI.Workflows" Version="1.3.0" />
+    <PackageVersion Include="Microsoft.Agents.AI.Foundry" Version="1.3.0" />
+    <!-- Preview-only members of the family. -->
+    <PackageVersion Include="Microsoft.Agents.AI.A2A" Version="1.3.0-preview.260423.1" />
+    <PackageVersion Include="Microsoft.Agents.AI.Hosting" Version="1.3.0-preview.260423.1" />
   </ItemGroup>
 
-  <ItemGroup Label="Model Context Protocol">
-    <PackageVersion Include="ModelContextProtocol" Version="0.3.0-preview" />
-    <PackageVersion Include="ModelContextProtocol.Client" Version="0.3.0-preview" />
-    <PackageVersion Include="ModelContextProtocol.Server" Version="0.3.0-preview" />
-    <PackageVersion Include="ModelContextProtocol.AspNetCore" Version="0.3.0-preview" />
+  <ItemGroup Label="Model Context Protocol (1.x)">
+    <PackageVersion Include="ModelContextProtocol" Version="1.2.0" />
+    <PackageVersion Include="ModelContextProtocol.Core" Version="1.2.0" />
+    <PackageVersion Include="ModelContextProtocol.AspNetCore" Version="1.2.0" />
   </ItemGroup>
 
   <ItemGroup Label="Provider SDKs">
     <PackageVersion Include="Azure.AI.OpenAI" Version="2.1.0" />
-    <PackageVersion Include="OpenAI" Version="2.1.0" />
-    <PackageVersion Include="OllamaSharp" Version="4.0.0" />
-    <PackageVersion Include="Anthropic.SDK" Version="5.0.0" />
+    <PackageVersion Include="OpenAI" Version="2.10.0" />
+    <PackageVersion Include="OllamaSharp" Version="5.4.25" />
+    <PackageVersion Include="Anthropic.SDK" Version="5.10.0" />
   </ItemGroup>
 
   <ItemGroup Label="Hosting and DI">

@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <PackageReference Include="ModelContextProtocol" />
-    <PackageReference Include="ModelContextProtocol.Client" />
   </ItemGroup>
 
 </Project>
