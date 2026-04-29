@@ -1,0 +1,20 @@
+[
+  {
+    "id": "q1",
+    "question": "What is the refund window?",
+    "groundTruth": "Customers may request a full refund within 30 days of purchase.",
+    "expectedAnswer": "Within 30 days of purchase."
+  },
+  {
+    "id": "q2",
+    "question": "How long is the manufacturer warranty?",
+    "groundTruth": "Products carry a one-year manufacturer warranty against defects.",
+    "expectedAnswer": "One year."
+  },
+  {
+    "id": "q3",
+    "question": "Do loyalty points expire?",
+    "groundTruth": "Loyalty rewards: points expire after 12 months.",
+    "expectedAnswer": "Yes -- loyalty points expire after 12 months."
+  }
+]

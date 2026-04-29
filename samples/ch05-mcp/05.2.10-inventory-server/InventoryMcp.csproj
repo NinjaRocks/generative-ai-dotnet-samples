@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Ch05.InventoryMcp</RootNamespace>
+    <AssemblyName>InventoryMcp</AssemblyName>
+    <PackageType>McpServer</PackageType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ModelContextProtocol" />
+    <PackageReference Include="ModelContextProtocol.Server" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update=".mcp\server.json" Pack="true" PackagePath="\.mcp\server.json" />
+  </ItemGroup>
+
+</Project>

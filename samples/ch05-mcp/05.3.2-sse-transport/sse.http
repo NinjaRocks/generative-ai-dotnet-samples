@@ -1,0 +1,40 @@
+@base = http://localhost:5180
+
+### Open the SSE event stream (this connection stays open).
+GET {{base}}/mcp/sse
+Accept: text/event-stream
+
+### Initialize
+POST {{base}}/mcp/messages
+Content-Type: application/json
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "initialize",
+  "params": {
+    "protocolVersion": "2025-06-18",
+    "capabilities": {},
+    "clientInfo": { "name": "rest-client", "version": "0.0.1" }
+  }
+}
+
+### List tools
+POST {{base}}/mcp/messages
+Content-Type: application/json
+
+{ "jsonrpc": "2.0", "id": 2, "method": "tools/list" }
+
+### Call Echo
+POST {{base}}/mcp/messages
+Content-Type: application/json
+
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "method": "tools/call",
+  "params": {
+    "name": "Echo",
+    "arguments": { "message": "Hello SSE" }
+  }
+}
