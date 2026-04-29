@@ -1,0 +1,65 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+  </PropertyGroup>
+
+  <ItemGroup Label="Microsoft.Extensions.AI">
+    <PackageVersion Include="Microsoft.Extensions.AI" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.AI.Abstractions" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.AI.OpenAI" Version="9.0.0-preview" />
+    <PackageVersion Include="Microsoft.Extensions.AI.Ollama" Version="9.0.0-preview" />
+    <PackageVersion Include="Microsoft.Extensions.AI.AzureAIInference" Version="9.0.0-preview" />
+  </ItemGroup>
+
+  <ItemGroup Label="Microsoft Agent Framework">
+    <PackageVersion Include="Microsoft.Agents.AI" Version="0.3.0-preview" />
+    <PackageVersion Include="Microsoft.Agents.AI.OpenAI" Version="0.3.0-preview" />
+    <PackageVersion Include="Microsoft.Agents.AI.Workflows" Version="0.3.0-preview" />
+    <PackageVersion Include="Microsoft.Agents.AI.AzureAI" Version="0.3.0-preview" />
+    <PackageVersion Include="Microsoft.Agents.AI.A2A" Version="0.3.0-preview" />
+    <PackageVersion Include="Microsoft.Agents.AI.Hosting" Version="0.3.0-preview" />
+  </ItemGroup>
+
+  <ItemGroup Label="Model Context Protocol">
+    <PackageVersion Include="ModelContextProtocol" Version="0.3.0-preview" />
+    <PackageVersion Include="ModelContextProtocol.Client" Version="0.3.0-preview" />
+    <PackageVersion Include="ModelContextProtocol.Server" Version="0.3.0-preview" />
+    <PackageVersion Include="ModelContextProtocol.AspNetCore" Version="0.3.0-preview" />
+  </ItemGroup>
+
+  <ItemGroup Label="Provider SDKs">
+    <PackageVersion Include="Azure.AI.OpenAI" Version="2.1.0" />
+    <PackageVersion Include="OpenAI" Version="2.1.0" />
+    <PackageVersion Include="OllamaSharp" Version="4.0.0" />
+    <PackageVersion Include="Anthropic.SDK" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Label="Hosting and DI">
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Label="ASP.NET Core">
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Label="Resilience and Telemetry">
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="9.0.0" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.10.0" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.10.0" />
+  </ItemGroup>
+
+  <ItemGroup Label="Testing">
+    <PackageVersion Include="xunit" Version="2.9.2" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+  </ItemGroup>
+</Project>

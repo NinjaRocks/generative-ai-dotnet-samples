@@ -1,0 +1,10 @@
+{
+  "$schema": "https://raw.githubusercontent.com/modelcontextprotocol/registry/main/docs/server.schema.json",
+  "name": "ch05-inventory",
+  "description": "Companion sample MCP server exposing a tiny in-memory product inventory.",
+  "version": "0.1.0",
+  "transports": [
+    { "type": "stdio" }
+  ],
+  "license": "MIT"
+}
