@@ -1,4 +1,30 @@
-// API-update-pending: this sample is being updated for the Microsoft.Agents.AI 1.x
-// and ModelContextProtocol 1.x API surface. See README.md and the Program.cs.book.txt
-// (and any other *.cs.book.txt) files for the original code as written for the manuscript.
-Console.WriteLine("Sample placeholder. See README.md and Program.cs.book.txt for the original implementation.");
+using Microsoft.Agents.AI;
+using Microsoft.Extensions.AI;
+using OllamaSharp;
+
+IChatClient chat = new OllamaApiClient(
+    new Uri(Environment.GetEnvironmentVariable("OLLAMA_ENDPOINT") ?? "http://localhost:11434"),
+    Environment.GetEnvironmentVariable("OLLAMA_MODEL") ?? "phi4-mini");
+
+ChatClientAgent agent = new(
+    chat,
+    instructions: """
+        You are Curio, a curious assistant that asks one short clarifying question
+        before answering. Keep replies under three sentences.
+        """,
+    name: "Curio");
+
+AgentSession session = await agent.CreateSessionAsync();
+
+string[] turns =
+[
+    "I'd like to plan a weekend hike.",
+    "Two people, intermediate fitness, prefer woodland trails.",
+];
+
+foreach (var turn in turns)
+{
+    Console.WriteLine($"\n[User] {turn}");
+    AgentResponse response = await agent.RunAsync(turn, session);
+    Console.WriteLine($"[{agent.Name}] {response}");
+}
