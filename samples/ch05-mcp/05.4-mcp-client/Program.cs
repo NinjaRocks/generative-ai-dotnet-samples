@@ -1,4 +1,85 @@
-// API-update-pending: this sample is being updated for the Microsoft.Agents.AI 1.x
-// and ModelContextProtocol 1.x API surface. See README.md and the Program.cs.book.txt
-// (and any other *.cs.book.txt) files for the original code as written for the manuscript.
-Console.WriteLine("Sample placeholder. See README.md and Program.cs.book.txt for the original implementation.");
+using ModelContextProtocol.Client;
+using ModelContextProtocol.Protocol;
+
+if (args.Length < 1)
+{
+    Console.Error.WriteLine("Usage: dotnet run -- <stdio | http> [endpoint-or-command...]");
+    Console.Error.WriteLine();
+    Console.Error.WriteLine("  stdio examples:");
+    Console.Error.WriteLine("    dotnet run -- stdio dnx Microsoft.Azure.Mcp --yes");
+    Console.Error.WriteLine("    dotnet run -- stdio dotnet run --project ../05.2.10-inventory-server");
+    Console.Error.WriteLine();
+    Console.Error.WriteLine("  http example:");
+    Console.Error.WriteLine("    dotnet run -- http http://localhost:5183/mcp");
+    return 1;
+}
+
+IClientTransport transport = args[0].ToLowerInvariant() switch
+{
+    "stdio" => new StdioClientTransport(new StdioClientTransportOptions
+    {
+        Command = args[1],
+        Arguments = args.Skip(2).ToArray(),
+    }),
+    "http" => new HttpClientTransport(new HttpClientTransportOptions
+    {
+        Endpoint = new Uri(args[1]),
+    }),
+    _ => throw new InvalidOperationException("First arg must be 'stdio' or 'http'.")
+};
+
+await using var client = await McpClient.CreateAsync(transport);
+
+Console.WriteLine($"Connected. Server: {client.ServerInfo?.Name ?? "(unknown)"}");
+Console.WriteLine();
+
+Console.WriteLine("Tools:");
+foreach (var tool in await client.ListToolsAsync())
+{
+    Console.WriteLine($"  - {tool.Name,-30} {tool.Description}");
+}
+
+Console.WriteLine();
+Console.WriteLine("Type a tool name and JSON arguments to invoke it (blank line to quit).");
+Console.WriteLine("Example:  Echo {\"message\":\"hi\"}");
+
+while (true)
+{
+    Console.Write("\n> ");
+    var line = Console.ReadLine();
+    if (string.IsNullOrWhiteSpace(line)) break;
+
+    var split = line.IndexOf(' ');
+    var name = split < 0 ? line : line[..split];
+    var argsJson = split < 0 ? "{}" : line[(split + 1)..];
+
+    try
+    {
+        var doc = System.Text.Json.JsonDocument.Parse(argsJson);
+        var dict = new Dictionary<string, object?>();
+        foreach (var prop in doc.RootElement.EnumerateObject())
+        {
+            dict[prop.Name] = prop.Value.ValueKind switch
+            {
+                System.Text.Json.JsonValueKind.String => prop.Value.GetString(),
+                System.Text.Json.JsonValueKind.Number => prop.Value.GetDouble(),
+                System.Text.Json.JsonValueKind.True => true,
+                System.Text.Json.JsonValueKind.False => false,
+                _ => prop.Value.ToString(),
+            };
+        }
+
+        var result = await client.CallToolAsync(name, dict);
+        foreach (var content in result.Content)
+        {
+            if (content is TextContentBlock tc) Console.WriteLine(tc.Text);
+            else Console.WriteLine($"({content.GetType().Name})");
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.Error.WriteLine($"ERROR: {ex.Message}");
+    }
+}
+
+return 0;

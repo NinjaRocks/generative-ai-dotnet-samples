@@ -1,4 +1,24 @@
-// API-update-pending: this sample is being updated for the Microsoft.Agents.AI 1.x
-// and ModelContextProtocol 1.x API surface. See README.md and the Program.cs.book.txt
-// (and any other *.cs.book.txt) files for the original code as written for the manuscript.
-Console.WriteLine("Sample placeholder. See README.md and Program.cs.book.txt for the original implementation.");
+using System.ComponentModel;
+using ModelContextProtocol.Server;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services
+    .AddMcpServer()
+    .WithHttpTransport()
+    .WithToolsFromAssembly();
+
+var app = builder.Build();
+
+app.MapMcp("/mcp");
+app.MapGet("/healthz", () => Results.Ok("ok"));
+
+app.Run();
+
+
+[McpServerToolType]
+public static class TimeTool
+{
+    [McpServerTool, Description("Returns the server's current local time.")]
+    public static string Now() => DateTime.Now.ToString("u");
+}

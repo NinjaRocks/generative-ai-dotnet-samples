@@ -1,4 +1,40 @@
-// API-update-pending: this sample is being updated for the Microsoft.Agents.AI 1.x
-// and ModelContextProtocol 1.x API surface. See README.md and the Program.cs.book.txt
-// (and any other *.cs.book.txt) files for the original code as written for the manuscript.
-Console.WriteLine("Sample placeholder. See README.md and Program.cs.book.txt for the original implementation.");
+using Microsoft.Agents.AI.Workflows;
+
+var upper = new FunctionExecutor<string, string>(
+    "uppercase",
+    (s, ctx, ct) => ValueTask.FromResult(s.ToUpperInvariant()));
+
+var reverse = new FunctionExecutor<string, string>(
+    "reverse",
+    (s, ctx, ct) => ValueTask.FromResult(new string(s.Reverse().ToArray())));
+
+Workflow workflow = new WorkflowBuilder(upper)
+    .AddEdge(upper, reverse)
+    .WithOutputFrom(reverse)
+    .Build();
+
+await using var run = await InProcessExecution.RunAsync(workflow, "Hello, agent!");
+foreach (var evt in run.NewEvents)
+{
+    if (evt is WorkflowOutputEvent output)
+    {
+        Console.WriteLine($"Result: {output.Data}");
+    }
+}
+
+Console.WriteLine();
+Console.WriteLine("Streaming events:");
+
+await using var stream = await InProcessExecution.RunStreamingAsync(workflow, "Streaming demo");
+await foreach (WorkflowEvent evt in stream.WatchStreamAsync())
+{
+    switch (evt)
+    {
+        case WorkflowOutputEvent output:
+            Console.WriteLine($"  output: {output.Data}");
+            break;
+        case ExecutorCompletedEvent completed:
+            Console.WriteLine($"  executor done: {completed.ExecutorId}");
+            break;
+    }
+}

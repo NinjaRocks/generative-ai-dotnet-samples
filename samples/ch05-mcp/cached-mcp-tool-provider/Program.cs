@@ -1,4 +1,39 @@
-// API-update-pending: this sample is being updated for the Microsoft.Agents.AI 1.x
-// and ModelContextProtocol 1.x API surface. See README.md and the Program.cs.book.txt
-// (and any other *.cs.book.txt) files for the original code as written for the manuscript.
-Console.WriteLine("Sample placeholder. See README.md and Program.cs.book.txt for the original implementation.");
+using Ch05.CachedMcpToolProvider;
+using ModelContextProtocol.Client;
+
+if (args.Length < 1)
+{
+    Console.Error.WriteLine("Usage: dotnet run -- <mcp-server-command> [server-args...]");
+    Console.Error.WriteLine("Example: dotnet run -- dotnet run --project ../05.2.10-inventory-server");
+    return 1;
+}
+
+var transport = new StdioClientTransport(new StdioClientTransportOptions
+{
+    Command = args[0],
+    Arguments = args.Skip(1).ToArray(),
+});
+
+await using var client = await McpClient.CreateAsync(transport);
+await using var provider = new CachedMcpToolProvider(client);
+
+Console.WriteLine("First call -- fetches and caches:");
+var firstCall = await provider.GetToolsAsync();
+PrintTools(firstCall);
+
+Console.WriteLine("\nSecond call -- served from cache:");
+var secondCall = await provider.GetToolsAsync();
+PrintTools(secondCall);
+
+Console.WriteLine("\n(If the server emits a tools/list_changed notification, the cache is invalidated.)");
+
+return 0;
+
+
+static void PrintTools(IList<McpClientTool> tools)
+{
+    foreach (var tool in tools)
+    {
+        Console.WriteLine($"  - {tool.Name,-30} {tool.Description}");
+    }
+}
