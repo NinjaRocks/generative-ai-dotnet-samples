@@ -6,6 +6,8 @@ A minimal LLM-as-judge harness that scores candidate answers on **faithfulness**
 
 The bundled `golden-dataset.json` is a 3-row demo. Replace it with your own questions/ground-truths and plug in your real RAG pipeline's answer in place of the `candidateAnswer` placeholder.
 
+`Bootstrap.cs` ships a small Q&A-pair generator that reads chunks of your indexed corpus and proposes one `QaPair` per chunk via the same `IChatClient` plumbing. Use it to seed a golden dataset from a corpus with no existing user logs, then human-review the result before checking it in.
+
 ## Run it
 
 ```bash
