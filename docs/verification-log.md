@@ -14,7 +14,7 @@ Pre-publication verification record for *Generative AI in .NET*. One entry per p
 - [ ] Most recent week is fully green.
 - [ ] No package on the watch list has a known breaking change pending.
 - [ ] Companion repo CI green on the latest commit.
-- [ ] Companion repo tagged `v1.0-print-ready` matching the manuscript version.
+- [ ] Companion repo tagged `v1.0-first-print` matching the manuscript version.
 
 ---
 
