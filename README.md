@@ -135,6 +135,12 @@ If you intend to run any sample unattended (CI, scheduled jobs, scripts), set pe
 
 CI runs on every push and pull request, plus a weekly Monday build to catch transitive package drift. The matrix builds every sample in the `samples/` tree against the pinned versions in `Directory.Packages.props`. A green badge above means the print-tagged code still compiles end-to-end. If the badge is red, check the latest [Actions run](https://github.com/CodeShayk/generative-ai-dotnet-samples/actions/workflows/ci.yml) for the breaking package or API change before assuming the samples are wrong.
 
+CI catches build-level drift but not all runtime regressions. For the model-ID surface that ships in Appendix B, run the live-API smoke harness at [`tests/AnthropicVerification/`](tests/AnthropicVerification/) -- it iterates each cited Claude model ID against the live Anthropic API and reports `PASS`/`FAIL` per model. Each verification pass is recorded in [`docs/verification-log.md`](docs/verification-log.md).
+
+## Known issues
+
+- **`Anthropic.SDK` 5.10 ↔ `Microsoft.Extensions.AI` 10.5 binding gap.** `Anthropic.SDK` 5.10.0 is compiled against `Microsoft.Extensions.AI.Abstractions` 10.3.0; the central pin moved to 10.5.0 (required by `Microsoft.Agents.AI` 1.3), which reshapes `HostedMcpServerTool.AuthorizationToken`. Calling Claude through Anthropic.SDK's `IChatClient` bridge therefore throws `MissingMethodException` at runtime. This affects `samples/ch04-agent-framework/04.2.4-anthropic-agents` -- it builds clean but does not run as-shipped. The throwaway harness at `tests/AnthropicVerification/` works because it has no `Microsoft.Agents.AI` dependency and pins M.E.AI to 10.3.0 locally via `VersionOverride`; the same override does **not** work on the chapter sample because Agents.AI 1.3 itself rejects 10.3 with `CS1705`. Mitigation paths and pre-print decision are tracked in `docs/verification-log.md` (entry `2026-05-02`). Likely cleared once `Anthropic.SDK` 5.11+ ships rebuilt against M.E.AI 10.5+.
+
 ## Versioning and tags
 
 | Tag | Meaning |

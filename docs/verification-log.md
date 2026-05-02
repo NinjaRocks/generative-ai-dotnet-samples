@@ -91,3 +91,45 @@ Copy this block to start a new entry. Date format `YYYY-MM-DD`.
 ---
 
 *New entries go below this line, most recent first.*
+
+---
+
+## 2026-05-02 -- P0-4 Anthropic live-API smoke
+
+**Status:** Yellow -- model IDs and URLs verified green; one real defect (M.E.AI ↔ Anthropic.SDK runtime binding gap) blocks the existing Anthropic sample and must be cleared before print.
+
+**Test runs in this entry:** initial pass blocked on zero credit balance; re-run later the same day with funded key returned all three model IDs `OK`.
+
+### Packages
+- [x] `Anthropic.SDK` -- v5.10.0 (latest stable on NuGet); central pin unchanged.
+- [x] `Microsoft.Extensions.AI` -- v10.5.0 central pin; harness overrides to v10.3.0 to match Anthropic.SDK's compile-time target (see Issues).
+
+### Code samples
+- [x] Verification harness at `tests/AnthropicVerification/` builds clean with M.E.AI 10.3.0 override.
+- [x] Live-API model-ID smoke through the harness -- **green for all three IDs** (`PASS  claude-opus-4-7: OK`; `PASS  claude-sonnet-4-6: OK`; `PASS  claude-haiku-4-5-20251001: OK`).
+- [ ] Existing `samples/ch04-agent-framework/04.2.4-anthropic-agents` -- builds clean but **fails at runtime** with `MissingMethodException` from `Anthropic.SDK.Messaging.ChatClientHelper.CreateMessageParameters` -> `Microsoft.Extensions.AI.FunctionInvokingChatClient.GetResponseAsync` -> `Microsoft.Agents.AI.ChatClientAgent.RunCoreAsync`. Re-confirmed with funded key on 2026-05-02; the defect is independent of credits (see Issues).
+
+### URLs
+- [x] `https://docs.anthropic.com/` (cited at `Manuscript/Chapter-04.md:3609`) -- HTTP 200.
+- [x] `https://platform.claude.com/docs/en/about-claude/models/overview` (cited at `Manuscript/Appendix-B-Model-Quick-Reference.md:36`) -- HTTP 200.
+- [x] Sanity: `https://platform.claude.com/`, `https://docs.anthropic.com/en/docs/about-claude/models/overview` -- both HTTP 200.
+- [ ] Microsoft Learn / Azure / NuGet links -- deferred; not in the P0-4 scope.
+
+### Anthropic API surface
+- [x] Model IDs in `Manuscript/Appendix-B-Model-Quick-Reference.md:32-34` and `Manuscript/Chapter-04.md:557` (`claude-opus-4-7`, `claude-sonnet-4-6`, `claude-haiku-4-5-20251001`) -- all three callable; harness round-trip returned the expected `OK` response.
+- [x] `Anthropic.SDK` package surface used in chapter examples (`new AnthropicClient(key).Messages` as `IChatClient`) -- wire-compatible with the live API; full request/response round-trip confirmed when paired with M.E.AI 10.3.0.
+
+### Issues found / actions taken
+- **Defect (blocks print): `samples/ch04-agent-framework/04.2.4-anthropic-agents` does not run against the repo's central pin.** Throws `MissingMethodException: Method not found: 'System.String Microsoft.Extensions.AI.HostedMcpServerTool.get_AuthorizationToken()'.` from `Anthropic.SDK.Messaging.ChatClientHelper.CreateMessageParameters`. Cause: `Anthropic.SDK` 5.10.0's nuspec declares `Microsoft.Extensions.AI.Abstractions >= 10.3.0` but the assembly is compiled against 10.3.0 specifically; M.E.AI 10.5.0 changed the shape of `HostedMcpServerTool.AuthorizationToken` (property-getter no longer present). CI is green because builds succeed against the *abstractions* package surface; runtime binding does not.
+    - **Tried: per-project `VersionOverride` to 10.3.0 (initially proposed as option 3).** Verified to *not work* for this sample: `Microsoft.Agents.AI` 1.3.0 is itself compiled against `Microsoft.Extensions.AI.Abstractions` 10.5.0, so downgrading abstractions to 10.3.0 raises `CS1705 (uses higher version than referenced assembly)` at compile time. Override reverted; sample is back to clean build, broken runtime.
+    - **The harness avoids the conflict only because it has no `Microsoft.Agents.AI` dependency** -- pure Anthropic.SDK + M.E.AI. Override pin 10.3.0 stays on the harness as the runtime mitigation there.
+    - **Remaining viable paths (pre-print decision):**
+        1. Wait for `Anthropic.SDK` 5.11+ rebuilt against M.E.AI 10.5+. Cleanest, but not on NuGet as of 2026-05-02 (latest stable: 5.10.0). Watch <https://www.nuget.org/packages/Anthropic.SDK>.
+        2. Replace Anthropic.SDK's IChatClient bridge with a small custom `IChatClient` that calls `AnthropicClient.Messages.GetClaudeMessageAsync` directly. ~50 lines in the sample; bypasses the broken `ChatClientHelper`. Changes the chapter narrative slightly (the sample now ships a thin adapter rather than relying on the SDK's built-in adapter).
+        3. Switch the sample to the OpenAI SDK pointed at Anthropic's OpenAI-compatibility endpoint. Strongest provider-neutral story, but rewrites the chapter section.
+- **CI gap:** the build matrix needs at least one runtime-execution lane for samples that have non-cloud-key prerequisites (currently 04.2.4 needs ANTHROPIC_API_KEY so cannot run unattended; consider adding a stub-key smoke that exercises the M.E.AI binding via `IChatClient` invocation up to the wire-send point).
+- Verification harness lives at `tests/AnthropicVerification/` (throwaway, not in `AI in .Net.sln`). Re-run: `ANTHROPIC_API_KEY=<key> dotnet run --project tests/AnthropicVerification`.
+
+### Next-pass to-dos
+- [ ] Pick one of paths 1-3 above for the chapter sample. If path 1 (wait for SDK 5.11), open a tracking issue and re-check NuGet weekly. If path 2 (custom IChatClient), implement the bridge, re-run, confirm green. If path 3 (OpenAI-compat endpoint), revise the chapter prose for §4.2.4.
+- [ ] Run the broader URL audit (Microsoft Learn, Azure, NuGet) and fold into the next weekly entry.
