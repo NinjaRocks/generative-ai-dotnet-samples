@@ -45,4 +45,4 @@ Mirrors the package matrix in `Appendix-C-Provider-Support-Matrix.md` and `Appen
 
 ## Last validated
 
-- **2026-04-29** -- initial pin, set during companion repo scaffolding. Re-verify against live NuGet before tagging `v1.0-print-ready`.
+- **2026-04-29** -- initial pin, set during companion repo scaffolding. Re-verify against live NuGet before tagging `v1.0-first-print`.

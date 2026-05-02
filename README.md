@@ -1,74 +1,97 @@
 # Generative AI in .NET -- Companion Code
 
-Runnable code samples for **Generative AI in .NET** (Najaf Shaikh).
+[![CI](https://github.com/CodeShayk/generative-ai-dotnet-samples/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/CodeShayk/generative-ai-dotnet-samples/actions/workflows/ci.yml)
 
-Every sample in this repo corresponds to a section of the printed book. The full map between book and code lives in [`docs/citation-index.md`](docs/citation-index.md). When the book has been condensed in favor of pointing here, the manuscript cites a **tag** (e.g. `v1.0-print-ready`) so the code stays aligned with the print run.
+Runnable code samples for **Generative AI in .NET** by Najaf Shaikh.
+
+Every sample in this repo corresponds to a section of the printed book. The full book-to-code map lives in [`docs/citation-index.md`](docs/citation-index.md). When the book condenses a section in favor of pointing here, the manuscript cites a **tag** (e.g. `v1.0-first-print`) so the cited code matches the print run -- `master` will drift as the surrounding APIs evolve.
+
+> **About this code.** These are **teaching samples**, not production-grade libraries. They are written for clarity over coverage: each sample demonstrates a single technique, with error handling, retry, observability, and configuration shown to a useful depth rather than exhaustively. Patterns covered -- prompt caching, resilience, evaluation, model routing, output guards, MCP transports -- are real and copy-pasteable, but hardening, threat-modeling, and cost-bounding them for your environment is your responsibility.
 
 ## Layout
 
 ```
-samples/
-  ch01-foundations/
-    01.3-hello-chat/                    -- IChatClient with provider selection
-    01.3-embeddings/                    -- IEmbeddingGenerator + cosine similarity
-    01.4-secrets-and-config/            -- appsettings + user-secrets + env vars
-  ch02-extensions-ai/
-    02.1-console-chat-loop/             -- Sliding-window chat REPL
-    02.2-streaming-aspnet/              -- SSE streaming in a Minimal API
-    02.2-structured-output/             -- GetResponseAsync<T>()
-    02.3-function-calling/              -- Three-tool weather + calendar + reminders
-    02.4-middleware-pipeline/           -- Logging + caching pipeline
-    02.4-custom-middleware/             -- Token-budget DelegatingChatClient
-  ch03-rag/
-    03.1-semantic-search/               -- Embedding + cosine over a product catalog
-    03.2-rag-basic/                     -- Retrieve / augment / generate
-    03.2-ingestion-pipeline/            -- Load + chunk + hash + embed + upsert
-    03.2.7-evaluation/                  -- LLM-as-judge for RAG (faithfulness + relevance)
-    03.3-vision-extract/                -- Receipt image -> typed Receipt record
-    03.5-local-rag/                     -- Local-only RAG (Ollama)
-  ch04-agent-framework/
-    04.2.1-hello-agent/                 -- ChatClientAgent hello world
-    04.2.4-anthropic-agents/            -- Same agent API, Claude under the hood
-    04.3-persistent-session/            -- AgentThread serialize / resume
-    04.4-tools-and-approval/            -- Function tools + RequiresApproval marker
-    04.5-agent-middleware/              -- Custom run-middleware
-    04.6.3-text-processing-walkthrough/ -- Linear workflow walkthrough
-    04.6.7-content-workflow/            -- Researcher / Writer / Editor multi-agent
-    04.7-a2a-server/                    -- Expose an agent via A2A protocol
-    04.8-agent-with-mcp/                -- Agent with mixed local + MCP tools
-  ch05-mcp/
-    05.2.10-inventory-server/           -- Full MCP server (tools + resources + prompts)
-    05.3.1-stdio-transport/             -- Minimal stdio server
-    05.3.2-sse-transport/               -- ASP.NET Core SSE transport
-    05.3.3-streamable-http/             -- Streamable HTTP (recommended)
-    05.4-mcp-client/                    -- Interactive MCP client REPL
-    05.6.3-mcp-agent-factory/           -- McpAgentFactory
-    cached-mcp-tool-provider/           -- CachedMcpToolProvider (Critical-1 fix)
-  ch06-production/
-    06.1-observability/                 -- OpenTelemetry tracing + OTLP export
-    06.2.1-resilience/                  -- Standard resilience handler
-    06.2.4-model-routing/               -- Classify-then-route cost optimization
-    06.5.1-unit-testing/                -- xUnit + StubChatClient
-    06.5.3-llm-as-judge/                -- Evaluation harness
-    output-guard-chat-client/           -- OutputGuardChatClient (Critical-3 fix)
-docs/
-  citation-index.md
-  version-matrix.md
-.github/workflows/ci.yml
-Directory.Packages.props
-global.json
+generative-ai-dotnet-samples/
+├── AI in .Net.sln                              -- solution covering every sample + tests
+├── Directory.Packages.props                    -- centralized NuGet versions
+├── global.json                                 -- .NET 9 SDK pin
+├── LICENSE                                     -- MIT
+├── docs/
+│   ├── citation-index.md                       -- book-section -> sample-path map
+│   └── version-matrix.md                       -- pinned package versions per chapter
+├── tests/                                      -- shared test infrastructure
+├── .github/workflows/ci.yml                    -- build matrix (push, PR, weekly)
+└── samples/
+    ├── Directory.Build.props                   -- shared MSBuild properties
+    ├── ch01-foundations/
+    │   ├── 01.3-hello-chat/                    -- IChatClient with provider selection
+    │   ├── 01.3-embeddings/                    -- IEmbeddingGenerator + cosine similarity
+    │   └── 01.4-secrets-and-config/            -- appsettings + user-secrets + env vars
+    ├── ch02-extensions-ai/
+    │   ├── 02.1-console-chat-loop/             -- Sliding-window chat REPL
+    │   ├── 02.2-streaming-aspnet/              -- SSE streaming in a Minimal API
+    │   ├── 02.2-structured-output/             -- GetResponseAsync<T>()
+    │   ├── 02.3-function-calling/              -- Weather + calendar + reminders tools
+    │   ├── 02.4-middleware-pipeline/           -- Logging + caching pipeline
+    │   └── 02.4-custom-middleware/             -- Token-budget DelegatingChatClient
+    ├── ch03-rag/
+    │   ├── 03.1-semantic-search/               -- Embedding + cosine over a catalog
+    │   ├── 03.2-rag-basic/                     -- Retrieve / augment / generate
+    │   ├── 03.2-ingestion-pipeline/            -- Load + chunk + hash + embed + upsert
+    │   ├── 03.2.7-evaluation/                  -- LLM-as-judge for RAG (faithfulness + relevance)
+    │   ├── 03.3-vision-extract/                -- Receipt image -> typed Receipt record
+    │   └── 03.5-local-rag/                     -- Local-only RAG (Ollama)
+    ├── ch04-agent-framework/
+    │   ├── 04.2.1-hello-agent/                 -- ChatClientAgent hello world
+    │   ├── 04.2.4-anthropic-agents/            -- Same agent API, Claude under the hood
+    │   ├── 04.3-persistent-session/            -- Agent session serialize / resume
+    │   ├── 04.4-tools-and-approval/            -- Function tools + RequiresApproval marker
+    │   ├── 04.5-agent-middleware/              -- Custom run-middleware
+    │   ├── 04.6.3-text-processing-walkthrough/ -- Linear workflow walkthrough
+    │   ├── 04.6.7-content-workflow/            -- Researcher / Writer / Editor multi-agent
+    │   ├── 04.7-a2a-server/                    -- Expose an agent via A2A protocol
+    │   └── 04.8-agent-with-mcp/                -- Agent with mixed local + MCP tools
+    ├── ch05-mcp/
+    │   ├── 05.2.10-inventory-server/           -- Full MCP server (tools + resources + prompts)
+    │   ├── 05.3.1-stdio-transport/             -- Minimal stdio server
+    │   ├── 05.3.2-sse-transport/               -- ASP.NET Core SSE transport (legacy)
+    │   ├── 05.3.3-streamable-http/             -- Streamable HTTP (recommended)
+    │   ├── 05.4-mcp-client/                    -- Interactive MCP client REPL
+    │   ├── 05.6.3-mcp-agent-factory/           -- McpAgentFactory
+    │   └── cached-mcp-tool-provider/           -- CachedMcpToolProvider (caching wrapper)
+    ├── ch06-production/
+    │   ├── 06.1-observability/                 -- OpenTelemetry tracing + OTLP export
+    │   ├── 06.2.1-resilience/                  -- Standard resilience handler
+    │   ├── 06.2.4-model-routing/               -- Classify-then-route cost optimization
+    │   ├── 06.5.1-unit-testing/                -- xUnit + StubChatClient
+    │   ├── 06.5.3-llm-as-judge/                -- Evaluation harness
+    │   └── output-guard-chat-client/           -- OutputGuardChatClient (PII + leak guard)
+    └── appendix-a-packages/                    -- Quick-start bundles from Appendix A
 ```
 
 ## Prerequisites
 
 - **.NET 9 SDK** (`dotnet --version` should be 9.0.x).
-- **Provider credentials** for samples that hit a live model -- each sample's README names what it needs:
+- **Provider credentials** for samples that hit a live model -- each sample's README names exactly which it needs:
   - `OPENAI_API_KEY` for OpenAI / GitHub Models samples.
   - `AZURE_OPENAI_ENDPOINT` + `AZURE_OPENAI_KEY` for Azure OpenAI samples.
   - `ANTHROPIC_API_KEY` for Claude samples.
-- **Local services** for offline samples: [Ollama](https://ollama.com/) for local inference; an MCP-compatible runtime (`dnx`) for some MCP samples.
+- **[Ollama](https://ollama.com/)** for the offline samples and any sample that lists Ollama as its default profile.
 
-The repo uses **central package management** -- versions live in [`Directory.Packages.props`](Directory.Packages.props), shared properties in [`samples/Directory.Build.props`](samples/Directory.Build.props). Project files only carry `<PackageReference Include="..." />` -- no version attributes.
+The repo uses **central package management** -- versions live in [`Directory.Packages.props`](Directory.Packages.props), shared MSBuild properties in [`samples/Directory.Build.props`](samples/Directory.Build.props). Project files only carry `<PackageReference Include="..." />` -- no version attributes.
+
+## Configuration and secrets
+
+All samples read configuration in the standard .NET cascade: `appsettings.json` -> `appsettings.Development.json` -> environment variables -> User Secrets. **No sample contains a hardcoded API key.** Where User Secrets are required, the sample's README spells out the exact `dotnet user-secrets set` commands.
+
+For local development, prefer User Secrets:
+
+```bash
+dotnet user-secrets init --project samples/ch01-foundations/01.3-hello-chat
+dotnet user-secrets set "OpenAI:ApiKey" "<your-key>" --project samples/ch01-foundations/01.3-hello-chat
+```
+
+For anything beyond a developer workstation -- CI, shared environments, deployed services -- use your platform's secret manager (Azure Key Vault, AWS Secrets Manager, Doppler, etc.). Do not commit `appsettings.Development.json` or `.env` files containing keys; the repo's `.gitignore` already excludes the common patterns, but the responsibility is on you.
 
 ## Running a sample
 
@@ -84,6 +107,8 @@ Each sample folder has its own `README.md` with run instructions, expected outpu
 dotnet build
 ```
 
+builds the full `AI in .Net.sln` solution from the repo root.
+
 ## What's offline-runnable
 
 These samples need **only** Ollama (no API keys, no cloud calls):
@@ -97,33 +122,56 @@ These samples need **only** Ollama (no API keys, no cloud calls):
 
 The rest assume an OpenAI / Anthropic / Azure OpenAI key.
 
-## 1.x API surface (Agent Framework 1.3 / MCP 1.2)
+## Cost expectations
 
-All samples target `Microsoft.Agents.AI` 1.3 and `ModelContextProtocol` 1.2. The manuscript was originally drafted against the 0.3.x previews, so the printed code occasionally differs from what's in this repo. The original 0.3-preview snippets are preserved alongside the live code as `*.cs.book.txt` for traceability. The shape changes that recur most often:
+Cloud-provider samples spend real money against your account. Most are single-shot prompts that come in well under a cent at current OpenAI / Azure OpenAI / Anthropic pricing. The two exceptions worth flagging:
 
-- `ChatClientAgentOptions` no longer carries `Instructions` / `Tools` -- they move to `ChatClientAgentOptions.ChatOptions` (`Instructions`, `Tools`) or to the string-arg `ChatClientAgent` constructor.
-- `AgentThread` -> `AgentSession`; `AgentRunResponse` -> `AgentResponse`; `AIAgent.GetNewThread()` -> `AIAgent.CreateSessionAsync(...)`. Session serialization is `agent.SerializeSessionAsync(session)` / `agent.DeserializeSessionAsync(jsonElement)`.
-- `WorkflowBuilder()` parameterless ctor is gone -- the start executor is passed to the constructor (`new WorkflowBuilder(start)`). `Executor.From` / `FromAsync` lambdas became `new FunctionExecutor<TIn, TOut>(id, handler)`. `SetOutputExecutor` -> `WithOutputFrom(...)`. `workflow.RunAsync(...)` was replaced by `InProcessExecution.RunAsync(workflow, input)`.
-- The `AsBuilder().Use(...)` middleware delegate now receives `(messages, session, options, innerAgent, ct)` -- you call `innerAgent.RunAsync(...)` instead of a `next` delegate.
-- `ModelContextProtocol.Client` / `ModelContextProtocol.Server` are no longer separate packages -- everything is in `ModelContextProtocol` / `ModelContextProtocol.Core` / `ModelContextProtocol.AspNetCore`. `McpClientTool` now extends `AIFunction` directly (no `.AsAIFunction()` needed); rename via `tool.WithName(...)`.
-- Server bootstrap is `.AddMcpServer().WithHttpTransport().WithToolsFromAssembly()` then `app.MapMcp(...)`. `WithHttpServerTransport(...)` and `HttpTransportType.Sse` have been retired -- streamable HTTP is the only HTTP transport.
-- Client transports: `StreamableHttpClientTransport` -> `HttpClientTransport` (with `HttpClientTransportOptions`). `SseClientTransport` is gone.
-- A2A server hosting requires implementing `A2A.IAgentHandler`, registering it via `services.AddA2AAgent<THandler>(agentCard)`, then `app.MapA2A("/path")` from `A2A.AspNetCore`. The 0.3-preview's one-liner `app.MapA2A(agent, "/path")` no longer exists.
-- `McpClient.OnToolsListChanged(...)` was replaced by `client.RegisterNotificationHandler(NotificationMethods.ToolListChangedNotification, handler)`, which returns an `IAsyncDisposable`.
+- `03.2-ingestion-pipeline` embeds a multi-document corpus -- expect a few cents per full ingestion run, depending on the embedding model.
+- `06.5.3-llm-as-judge` and `03.2.7-evaluation` issue judge calls per evaluated response -- a 50-row golden set against a frontier model is typically tens of cents.
+
+If you intend to run any sample unattended (CI, scheduled jobs, scripts), set per-key spend caps in your provider console first.
+
+## Continuous integration
+
+CI runs on every push and pull request, plus a weekly Monday build to catch transitive package drift. The matrix builds every sample in the `samples/` tree against the pinned versions in `Directory.Packages.props`. A green badge above means the print-tagged code still compiles end-to-end. If the badge is red, check the latest [Actions run](https://github.com/CodeShayk/generative-ai-dotnet-samples/actions/workflows/ci.yml) for the breaking package or API change before assuming the samples are wrong.
 
 ## Versioning and tags
 
 | Tag | Meaning |
 |---|---|
-| `v1.0-print-ready` | Code as it appears in the first print run. |
-| `v1.x-second-print` | Updated for subsequent print revisions. |
-| `main` | Always-current; may drift from any specific print run. |
+| `v1.0-first-print` | Code as it appears in the first print run of the book. |
+| `v1.x-second-print` | Updated for any subsequent print revisions (placeholder; not yet cut). |
+| `master` | Always-current; tracks latest stable .NET 9 + Microsoft.Extensions.AI. May drift from any specific print run. |
 
-Use a **tag** in any URL you cite from the book -- never `main`.
+Use a **tag** in any URL you cite from the book -- never `master`.
+
+## Notes on the 1.x API surface (Agent Framework 1.3 / MCP 1.2)
+
+All samples target `Microsoft.Agents.AI` 1.3 and `ModelContextProtocol` 1.2. The manuscript was originally drafted against the 0.3.x previews, so a few printed snippets differ from what's checked in here. The original 0.3-preview snippets are preserved alongside the live code as `*.cs.book.txt` for traceability. The shape changes that recur most often:
+
+- `ChatClientAgentOptions` no longer carries `Instructions` / `Tools` -- they move to `ChatClientAgentOptions.ChatOptions` (`Instructions`, `Tools`) or to the string-arg `ChatClientAgent` constructor.
+- `AgentThread` -> `AgentSession`; `AgentRunResponse` -> `AgentResponse`; `AIAgent.GetNewThread()` -> `AIAgent.CreateSessionAsync(...)`. Session serialization is `agent.SerializeSessionAsync(session)` / `agent.DeserializeSessionAsync(jsonElement)`.
+- `WorkflowBuilder()` parameterless ctor is gone -- the start executor is passed to the constructor (`new WorkflowBuilder(start)`). `Executor.From` / `FromAsync` lambdas became `new FunctionExecutor<TIn, TOut>(id, handler)`. `SetOutputExecutor` -> `WithOutputFrom(...)`. `workflow.RunAsync(...)` was replaced by `InProcessExecution.RunAsync(workflow, input)`.
+- The `AsBuilder().Use(...)` middleware delegate now receives `(messages, session, options, innerAgent, ct)` -- you call `innerAgent.RunAsync(...)` instead of a `next` delegate.
+- `ModelContextProtocol.Client` / `ModelContextProtocol.Server` are no longer separate packages -- everything is in `ModelContextProtocol` / `ModelContextProtocol.Core` / `ModelContextProtocol.AspNetCore`. `McpClientTool` extends `AIFunction` directly (no `.AsAIFunction()` needed); rename via `tool.WithName(...)`.
+- Server bootstrap is `.AddMcpServer().WithHttpTransport().WithToolsFromAssembly()` then `app.MapMcp(...)`. `WithHttpServerTransport(...)` and `HttpTransportType.Sse` have been retired -- streamable HTTP is the only HTTP transport.
+- Client transports: `StreamableHttpClientTransport` -> `HttpClientTransport` (with `HttpClientTransportOptions`). `SseClientTransport` is gone.
+- A2A server hosting requires implementing `A2A.IAgentHandler`, registering it via `services.AddA2AAgent<THandler>(agentCard)`, then `app.MapA2A("/path")` from `A2A.AspNetCore`. The 0.3-preview's one-liner `app.MapA2A(agent, "/path")` no longer exists.
+- `McpClient.OnToolsListChanged(...)` was replaced by `client.RegisterNotificationHandler(NotificationMethods.ToolListChangedNotification, handler)`, which returns an `IAsyncDisposable`.
+
+## Contributing
+
+Issues are welcome -- bugs, builds broken by transitive package drift, samples whose APIs have moved on, README mistakes. Pull requests are welcome too, especially:
+
+- Build fixes for newer NuGet releases.
+- README clarifications (per sample or repo-wide).
+- New offline-runnable variants of samples that currently require cloud keys.
+
+Before opening a PR: run `dotnet build` from the repo root and confirm the affected sample(s) still run. If you change observable behavior, update the sample's README.
 
 ## Errata
 
-Open an issue at [github.com/CodeShayk/generative-ai-dotnet-samples](https://github.com/CodeShayk/generative-ai-dotnet-samples). Confirmed errata roll into the next print tag and are noted in the parent book's errata page.
+Open an issue at [github.com/CodeShayk/generative-ai-dotnet-samples](https://github.com/CodeShayk/generative-ai-dotnet-samples/issues). Confirmed errata roll into the next print tag and are noted in the parent book's errata page.
 
 ## License
 

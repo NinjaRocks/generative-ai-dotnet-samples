@@ -2,7 +2,7 @@
 
 The map between book sections and their runnable companion code in this repository.
 
-When the manuscript condenses a section and points at this repo, the citation should always reference a **tag** (e.g. `v1.0-print-ready`) rather than `main`. `main` will drift.
+When the manuscript condenses a section and points at this repo, the citation should always reference a **tag** (e.g. `v1.0-first-print`) rather than `master`. `master` will drift.
 
 ## Chapter 1 -- Foundations
 
@@ -75,7 +75,7 @@ When the manuscript condenses a section and points at this repo, the citation sh
 
 When a manuscript section is condensed in favor of pointing here, use this exact wording (substitute the tag and path):
 
-> *Full implementation: <https://github.com/CodeShayk/generative-ai-dotnet-samples/tree/v1.0-print-ready/samples/ch04-agent-framework/04.6.3-text-processing-walkthrough>*
+> *Full implementation: <https://github.com/CodeShayk/generative-ai-dotnet-samples/tree/v1.0-first-print/samples/ch04-agent-framework/04.6.3-text-processing-walkthrough>*
 
 ## Pending (scaffolded but not populated)
 
