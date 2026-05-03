@@ -72,7 +72,7 @@ Copy this block to start a new entry. Date format `YYYY-MM-DD`.
 
 ### Packages
 - [x] Critical-5 list re-verified against live NuGet feed; companion repo pinned to `Microsoft.Agents.AI 1.3` and `ModelContextProtocol 1.2`.
-- [x] All 37 sample projects build clean on these versions (companion-repo commits `0047e61` + `35e6fd3`).
+- [x] All 37 sample projects build clean on these versions (companion-repo commits `aed6f48` + `1173364`).
 - [x] CI matrix green (run 25136332826).
 
 ### Code samples
