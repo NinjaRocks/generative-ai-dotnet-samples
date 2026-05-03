@@ -1,4 +1,5 @@
 using Anthropic.SDK;
+using Ch04.AnthropicAgent;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 
@@ -7,7 +8,10 @@ var apiKey = Environment.GetEnvironmentVariable("ANTHROPIC_API_KEY")
 
 var modelId = Environment.GetEnvironmentVariable("ANTHROPIC_MODEL") ?? "claude-haiku-4-5-20251001";
 
-IChatClient chat = new AnthropicClient(apiKey).Messages;
+// AnthropicChatClient is a thin local shim -- see AnthropicChatClient.cs for the rationale.
+// Once Anthropic.SDK 5.11+ ships rebuilt against M.E.AI 10.5+, this can become
+// `new AnthropicClient(apiKey).Messages` again.
+IChatClient chat = new AnthropicChatClient(new AnthropicClient(apiKey), modelId);
 
 ChatClientAgent agent = new(chat, new ChatClientAgentOptions
 {

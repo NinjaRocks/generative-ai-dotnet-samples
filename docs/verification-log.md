@@ -94,6 +94,32 @@ Copy this block to start a new entry. Date format `YYYY-MM-DD`.
 
 ---
 
+## 2026-05-03 -- Option-2 Anthropic shim landed; 04.2.4 sample now runs
+
+**Status:** Green for the previously-yellow Anthropic chapter sample. Defect from 2026-05-02 cleared via path 2 (custom `IChatClient` adapter).
+
+### Packages
+- [x] `Anthropic.SDK` -- still v5.10.0 (no 5.11+ on NuGet yet; checked via `dotnet package search Anthropic.SDK --exact-match`).
+- [x] `Microsoft.Extensions.AI` -- v10.5.0 central pin unchanged. No per-project `VersionOverride` on the chapter sample.
+
+### Code samples
+- [x] `samples/ch04-agent-framework/04.2.4-anthropic-agents` builds clean against the central pins (no override needed).
+- [x] Live-API end-to-end run with `claude-haiku-4-5-20251001` -- both turns of the conversation produced real Claude output. No `MissingMethodException`.
+
+### Anthropic API surface
+- [x] `ChatClientAgent` over the local shim round-trips through `AnthropicClient.Messages.GetClaudeMessageAsync` with multi-turn history preserved across the second call.
+
+### Issues found / actions taken
+- **Implemented path 2 from the 2026-05-02 entry.** Added `samples/ch04-agent-framework/04.2.4-anthropic-agents/AnthropicChatClient.cs` -- a ~120-line `IChatClient` adapter that calls `AnthropicClient.Messages.GetClaudeMessageAsync` directly and translates between Anthropic's wire types and `Microsoft.Extensions.AI` types. Bypasses Anthropic.SDK's bundled `ChatClientHelper`, which is the path that touches the reshaped `HostedMcpServerTool.AuthorizationToken` and throws under M.E.AI 10.5. `Program.cs` now constructs `new AnthropicChatClient(new AnthropicClient(apiKey), modelId)` instead of `new AnthropicClient(apiKey).Messages`. README updated to explain the shim and to call out that it can be removed once Anthropic.SDK 5.11+ ships.
+- Streaming is implemented as a single-update wrapper around the non-streaming path; the chapter sample does not stream so this is sufficient. If streaming becomes part of the chapter prose, swap to `AnthropicClient.Messages.StreamClaudeMessageAsync` and yield per chunk.
+- Tool calling is intentionally not in the shim (the chapter sample is conversational only). Adding it would mean translating `ChatOptions.Tools` -> `MessageParameters.Tools` and translating `ToolUseContent` responses back into `FunctionCallContent`. Left as future work; not a print-blocker.
+
+### Next-pass to-dos
+- [ ] Watch <https://www.nuget.org/packages/Anthropic.SDK> for 5.11+. When it ships rebuilt against M.E.AI 10.5+, delete `AnthropicChatClient.cs`, revert `Program.cs` to `new AnthropicClient(apiKey).Messages`, and re-run the live smoke.
+- [ ] Resume the broader URL audit deferred from 2026-05-02.
+
+---
+
 ## 2026-05-02 -- P0-4 Anthropic live-API smoke
 
 **Status:** Yellow -- model IDs and URLs verified green; one real defect (M.E.AI ↔ Anthropic.SDK runtime binding gap) blocks the existing Anthropic sample and must be cleared before print.
