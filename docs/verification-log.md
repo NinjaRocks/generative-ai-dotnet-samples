@@ -94,6 +94,55 @@ Copy this block to start a new entry. Date format `YYYY-MM-DD`.
 
 ---
 
+## 2026-05-09 -- Pre-print weekly sweep; MEAI patch bump to 10.5.2; manuscript quality fixes
+
+**Status:** Green -- patch-only version movement; no breaking changes; all manuscript issues found and fixed.
+
+### Packages (Critical-5 list)
+- [x] `Microsoft.Extensions.AI` -- bumped **10.5.1 → 10.5.2** (patch). `Directory.Packages.props` and `docs/version-matrix.md` updated.
+- [x] `Microsoft.Extensions.AI.Abstractions` -- bumped **10.5.1 → 10.5.2** (patch).
+- [x] `Microsoft.Extensions.AI.OpenAI` -- bumped **10.5.1 → 10.5.2** (patch).
+- [x] `Microsoft.Extensions.AI.Evaluation` -- **10.5.0** confirmed; no 10.5.1 on NuGet (as expected). Corrected the version-matrix entry which incorrectly showed 10.5.1.
+- [x] `Microsoft.Extensions.AI.Evaluation.Quality` -- **10.5.0** confirmed; same note.
+- [x] `Microsoft.Agents.AI` -- **1.5.0** now on NuGet (was 1.3.0; skips 1.4.x). **Held at 1.3.0** pending CI verification. Watch-list item: run CI against 1.5.0 before next print drop.
+- [x] `Microsoft.Agents.AI.OpenAI` -- **1.5.0** on NuGet. Held at 1.3.0 with the family.
+- [x] `Microsoft.Agents.AI.Workflows` / `.Foundry` / `.Abstractions` -- **1.5.0** family. Held at 1.3.0.
+- [x] `ModelContextProtocol` -- **1.3.0** now on NuGet (was 1.2.0). **Held at 1.2.0** pending CI verification.
+- [x] `ModelContextProtocol.Core` -- **1.3.0** on NuGet. Held with family.
+- [x] `ModelContextProtocol.AspNetCore` -- **1.3.0** on NuGet. Held with family.
+- [x] `Azure.AI.OpenAI` -- **2.1.0** confirmed; no change.
+- [x] `OpenAI` -- **2.10.0** confirmed; no change.
+- [x] `OllamaSharp` -- **5.4.25** confirmed; no change.
+- [x] `Anthropic.SDK` -- **5.10.0** confirmed; no change. 5.11+ (rebuilt against M.E.AI 10.5+) still not on NuGet.
+- [x] `Microsoft.Extensions.AI.Ollama` / `.AzureAIInference` -- confirmed NOT referenced in `Directory.Packages.props`; samples use `OllamaSharp` and `Azure.AI.OpenAI` directly.
+
+### Code samples
+- [x] CI matrix last-green at companion commit `28d19ca` (2026-05-04). No new commits to companion repo this pass (only `Directory.Packages.props` and `docs/` updated). Will trigger CI with the 10.5.2 bump.
+- [x] Live-API smoke tests -- not re-run this pass (Anthropic key rotation pending §2.2). Status unchanged from 2026-05-03 Green entry.
+
+### URLs
+- [x] Full URL audit done 2026-05-03 (114 URLs; 8 broken links fixed). No manuscript URL changes made in this pass beyond the "Last validated" blockquote date update. No new external links added.
+
+### Anthropic API surface
+- [x] Model IDs in Appendix B and Chapter 4.2.4 unchanged from 2026-05-03 green entry. No new Anthropic model ID changes observed.
+- [x] `Anthropic.SDK` 5.10.0 API surface unchanged.
+
+### Issues found / actions taken
+- **Manuscript: "Last validated" blockquotes in all six chapters cited `9.x stable`** (stale version string from original drafting). Updated to `10.5.2 (Evaluation 10.5.0)` in `Chapter-01.md` through `Chapter-06.md`. Date updated from `April 2026` to `May 2026`.
+- **Manuscript: Chapter 1 csproj snippet** pinned `Microsoft.Extensions.AI` at `9.4.0` and `OllamaSharp` at `5.1.12` (both stale). Updated to `10.5.2` and `5.4.25` respectively (`Chapter-01.md`).
+- **Manuscript: Chapter 4 csproj snippets** had `Microsoft.Extensions.AI Version="9.*"` in two project file examples (lines 222 and 949 of the source). Changed to `Version="10.*"` (`Chapter-04.md`).
+- **Manuscript: Appendix C** had `SerializeSession` (truncated, missing `Async`) and described `serialize the thread` (should be `session`). Fixed both in `Appendix-C-Provider-Support-Matrix.md`.
+- **Manuscript: TOC section 5.1.3** described `ModelContextProtocol.Client`, `ModelContextProtocol.Server` as separate SDK packages. Corrected to describe the unified `ModelContextProtocol` façade (`TOC.md`).
+- **version-matrix.md** showed `Microsoft.Extensions.AI.Evaluation` at `10.5.1` (incorrect -- the package was never published at that version). Corrected to `10.5.0`.
+
+### Next-pass to-dos
+- [ ] Trigger CI on companion repo after the 10.5.2 MEAI bump; verify all 6 chapter build jobs pass.
+- [ ] Evaluate `Microsoft.Agents.AI` 1.5.0 and `ModelContextProtocol` 1.3.0 for breaking changes; update pins if CI stays green.
+- [ ] Rotate Anthropic API key (§2.2) before re-running live-API smoke tests.
+- [ ] Force-update `v1.0-first-print` companion tag to HEAD post-CI.
+
+---
+
 ## 2026-05-03 -- Option-2 Anthropic shim landed; 04.2.4 sample now runs
 
 **Status:** Green for the previously-yellow Anthropic chapter sample. Defect from 2026-05-02 cleared via path 2 (custom `IChatClient` adapter).

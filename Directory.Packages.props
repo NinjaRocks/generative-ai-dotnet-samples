@@ -5,15 +5,15 @@
   </PropertyGroup>
 
   <!--
-    Versions verified against the live NuGet feed on 2026-05-04.
+    Versions verified against the live NuGet feed on 2026-05-09.
     Re-run "dotnet package search PKG_NAME exact-match" periodically and bump
     these floors. See Manuscript/user-action-plan.md (Critical-5) for cadence.
   -->
 
   <ItemGroup Label="Microsoft.Extensions.AI (10.x)">
-    <PackageVersion Include="Microsoft.Extensions.AI" Version="10.5.1" />
-    <PackageVersion Include="Microsoft.Extensions.AI.Abstractions" Version="10.5.1" />
-    <PackageVersion Include="Microsoft.Extensions.AI.OpenAI" Version="10.5.1" />
+    <PackageVersion Include="Microsoft.Extensions.AI" Version="10.5.2" />
+    <PackageVersion Include="Microsoft.Extensions.AI.Abstractions" Version="10.5.2" />
+    <PackageVersion Include="Microsoft.Extensions.AI.OpenAI" Version="10.5.2" />
     <PackageVersion Include="Microsoft.Extensions.AI.Evaluation" Version="10.5.0" />
     <PackageVersion Include="Microsoft.Extensions.AI.Evaluation.Quality" Version="10.5.0" />
   </ItemGroup>

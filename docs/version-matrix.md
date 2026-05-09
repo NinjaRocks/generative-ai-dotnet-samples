@@ -8,11 +8,11 @@ Mirrors the package matrix in `Appendix-C-Provider-Support-Matrix.md` and `Appen
 
 | Package | Pinned version | Stability |
 |---|---|---|
-| `Microsoft.Extensions.AI` | 10.5.1 | Stable |
-| `Microsoft.Extensions.AI.Abstractions` | 10.5.1 | Stable |
-| `Microsoft.Extensions.AI.OpenAI` | 10.5.1 | Stable |
-| `Microsoft.Extensions.AI.Evaluation` | 10.5.1 | Stable |
-| `Microsoft.Extensions.AI.Evaluation.Quality` | 10.5.1 | Stable |
+| `Microsoft.Extensions.AI` | 10.5.2 | Stable |
+| `Microsoft.Extensions.AI.Abstractions` | 10.5.2 | Stable |
+| `Microsoft.Extensions.AI.OpenAI` | 10.5.2 | Stable |
+| `Microsoft.Extensions.AI.Evaluation` | 10.5.0 | Stable |
+| `Microsoft.Extensions.AI.Evaluation.Quality` | 10.5.0 | Stable |
 
 ## Microsoft Agent Framework
 
@@ -65,4 +65,5 @@ Mirrors the package matrix in `Appendix-C-Provider-Support-Matrix.md` and `Appen
 
 ## Last validated
 
+- **2026-05-09** -- NuGet sweep; bumped `Microsoft.Extensions.AI` (core + Abstractions + OpenAI) from `10.5.1` to `10.5.2` (patch). Corrected Evaluation pin entry — `Microsoft.Extensions.AI.Evaluation` and `.Evaluation.Quality` remain at `10.5.0`; a 10.5.1 for those packages never appeared on NuGet. `Microsoft.Agents.AI` 1.5.0 and `ModelContextProtocol` 1.3.0 observed on NuGet; held at 1.3.0 and 1.2.0 respectively pending CI verification before bumping.
 - **2026-05-03** -- NuGet sweep; bumped `Microsoft.Extensions.AI` family from `10.5.0` to `10.5.1`. All other Critical-5 pins confirmed at their current stable ceiling. Version matrix rewritten from stale 0.3.x-preview baseline.
