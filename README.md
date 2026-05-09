@@ -151,20 +151,6 @@ CI catches build-level drift but not all runtime regressions. For the model-ID s
 
 Use a **tag** in any URL you cite from the book -- never `master`.
 
-## Notes on the 1.x API surface (Agent Framework 1.3 / MCP 1.2)
-
-All samples target `Microsoft.Agents.AI` 1.3 and `ModelContextProtocol` 1.2. The manuscript was originally drafted against the 0.3.x previews, so a few printed snippets differ from what's checked in here. The original 0.3-preview snippets are preserved alongside the live code as `*.cs.book.txt` for traceability. The shape changes that recur most often:
-
-- `ChatClientAgentOptions` no longer carries `Instructions` / `Tools` -- they move to `ChatClientAgentOptions.ChatOptions` (`Instructions`, `Tools`) or to the string-arg `ChatClientAgent` constructor.
-- `AgentThread` -> `AgentSession`; `AgentRunResponse` -> `AgentResponse`; `AIAgent.GetNewThread()` -> `AIAgent.CreateSessionAsync(...)`. Session serialization is `agent.SerializeSessionAsync(session)` / `agent.DeserializeSessionAsync(jsonElement)`.
-- `WorkflowBuilder()` parameterless ctor is gone -- the start executor is passed to the constructor (`new WorkflowBuilder(start)`). `Executor.From` / `FromAsync` lambdas became `new FunctionExecutor<TIn, TOut>(id, handler)`. `SetOutputExecutor` -> `WithOutputFrom(...)`. `workflow.RunAsync(...)` was replaced by `InProcessExecution.RunAsync(workflow, input)`.
-- The `AsBuilder().Use(...)` middleware delegate now receives `(messages, session, options, innerAgent, ct)` -- you call `innerAgent.RunAsync(...)` instead of a `next` delegate.
-- `ModelContextProtocol.Client` / `ModelContextProtocol.Server` are no longer separate packages -- everything is in `ModelContextProtocol` / `ModelContextProtocol.Core` / `ModelContextProtocol.AspNetCore`. `McpClientTool` extends `AIFunction` directly (no `.AsAIFunction()` needed); rename via `tool.WithName(...)`.
-- Server bootstrap is `.AddMcpServer().WithHttpTransport().WithToolsFromAssembly()` then `app.MapMcp(...)`. `WithHttpServerTransport(...)` and `HttpTransportType.Sse` have been retired -- streamable HTTP is the only HTTP transport.
-- Client transports: `StreamableHttpClientTransport` -> `HttpClientTransport` (with `HttpClientTransportOptions`). `SseClientTransport` is gone.
-- A2A server hosting requires implementing `A2A.IAgentHandler`, registering it via `services.AddA2AAgent<THandler>(agentCard)`, then `app.MapA2A("/path")` from `A2A.AspNetCore`. The 0.3-preview's one-liner `app.MapA2A(agent, "/path")` no longer exists.
-- `McpClient.OnToolsListChanged(...)` was replaced by `client.RegisterNotificationHandler(NotificationMethods.ToolListChangedNotification, handler)`, which returns an `IAsyncDisposable`.
-
 ## Contributing
 
 Issues are welcome -- bugs, builds broken by transitive package drift, samples whose APIs have moved on, README mistakes. Pull requests are welcome too, especially:
