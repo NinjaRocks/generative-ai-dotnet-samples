@@ -116,6 +116,14 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "9.0.x"
+      - name: Run AnthropicVerification harness
+        if: ${{ env.ANTHROPIC_API_KEY != '' }}
+        shell: bash
+        run: |
+          echo "::group::AnthropicVerification (live API)"
+          dotnet run --project tests/AnthropicVerification
+          echo "::endgroup::"
+
       - name: Run smoke tests (if present)
         shell: bash
         run: |
