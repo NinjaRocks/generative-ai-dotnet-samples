@@ -94,9 +94,9 @@ Copy this block to start a new entry. Date format `YYYY-MM-DD`.
 
 ---
 
-## 2026-05-09 -- Pre-print weekly sweep; MEAI patch bump to 10.5.2; manuscript quality fixes
+## 2026-05-09 -- Pre-print weekly sweep; MEAI patch bump to 10.5.2; manuscript quality fixes; live-API smoke green
 
-**Status:** Green -- patch-only version movement; no breaking changes; all manuscript issues found and fixed.
+**Status:** **Green** -- all builds pass, all 3 Claude model IDs confirmed callable against live API via CI secret, manuscript quality issues fixed.
 
 ### Packages (Critical-5 list)
 - [x] `Microsoft.Extensions.AI` -- bumped **10.5.1 → 10.5.2** (patch). `Directory.Packages.props` and `docs/version-matrix.md` updated.
@@ -117,15 +117,15 @@ Copy this block to start a new entry. Date format `YYYY-MM-DD`.
 - [x] `Microsoft.Extensions.AI.Ollama` / `.AzureAIInference` -- confirmed NOT referenced in `Directory.Packages.props`; samples use `OllamaSharp` and `Azure.AI.OpenAI` directly.
 
 ### Code samples
-- [x] CI matrix last-green at companion commit `28d19ca` (2026-05-04). No new commits to companion repo this pass (only `Directory.Packages.props` and `docs/` updated). Will trigger CI with the 10.5.2 bump.
-- [x] Live-API smoke tests -- not re-run this pass (Anthropic key rotation pending §2.2). Status unchanged from 2026-05-03 Green entry.
+- [x] CI matrix green at companion commit `3f81f99` (2026-05-09). All 6 chapter build jobs pass against MEAI 10.5.2 (run [25599382646](https://github.com/CodeShayk/generative-ai-dotnet-samples/actions/runs/25599382646)).
+- [x] **Live-API smoke tests green** -- `workflow_dispatch` run [25599382646](https://github.com/CodeShayk/generative-ai-dotnet-samples/actions/runs/25599382646) ran `tests/AnthropicVerification` against the `ANTHROPIC_API_KEY` repository secret. All three model IDs returned `OK`: `PASS  claude-opus-4-7: OK` / `PASS  claude-sonnet-4-6: OK` / `PASS  claude-haiku-4-5-20251001: OK`.
 
 ### URLs
 - [x] Full URL audit done 2026-05-03 (114 URLs; 8 broken links fixed). No manuscript URL changes made in this pass beyond the "Last validated" blockquote date update. No new external links added.
 
 ### Anthropic API surface
-- [x] Model IDs in Appendix B and Chapter 4.2.4 unchanged from 2026-05-03 green entry. No new Anthropic model ID changes observed.
-- [x] `Anthropic.SDK` 5.10.0 API surface unchanged.
+- [x] All three model IDs cited in `Appendix-B-Model-Quick-Reference.md` and `Chapter-04.md` (§4.2.4) confirmed callable against the live API via CI: `claude-opus-4-7`, `claude-sonnet-4-6`, `claude-haiku-4-5-20251001` -- each returned `OK`.
+- [x] `Anthropic.SDK` 5.10.0 API surface unchanged. `AnthropicClient.Messages` as `IChatClient` with MEAI 10.3.0 override still works end-to-end.
 
 ### Issues found / actions taken
 - **Manuscript: "Last validated" blockquotes in all six chapters cited `9.x stable`** (stale version string from original drafting). Updated to `10.5.2 (Evaluation 10.5.0)` in `Chapter-01.md` through `Chapter-06.md`. Date updated from `April 2026` to `May 2026`.
@@ -136,10 +136,10 @@ Copy this block to start a new entry. Date format `YYYY-MM-DD`.
 - **version-matrix.md** showed `Microsoft.Extensions.AI.Evaluation` at `10.5.1` (incorrect -- the package was never published at that version). Corrected to `10.5.0`.
 
 ### Next-pass to-dos
-- [ ] Trigger CI on companion repo after the 10.5.2 MEAI bump; verify all 6 chapter build jobs pass.
-- [ ] Evaluate `Microsoft.Agents.AI` 1.5.0 and `ModelContextProtocol` 1.3.0 for breaking changes; update pins if CI stays green.
-- [ ] Rotate Anthropic API key (§2.2) before re-running live-API smoke tests.
-- [ ] Force-update `v1.0-first-print` companion tag to HEAD post-CI.
+- [x] ~~Trigger CI on companion repo after the 10.5.2 MEAI bump; verify all 6 chapter build jobs pass.~~ Done -- run 25599382646 green.
+- [x] ~~Force-update `v1.0-first-print` companion tag to HEAD post-CI.~~ Done -- tag at `3f81f99`.
+- [ ] Evaluate `Microsoft.Agents.AI` 1.5.0 and `ModelContextProtocol` 1.3.0 for breaking changes; update pins if CI stays green (next weekly pass).
+- [ ] Rotate Anthropic API key (§2.2) -- user action at <https://console.anthropic.com/>.
 
 ---
 
