@@ -1,1 +1,0 @@
-- [Pre-print version pinning conventions](pre_print_versions.md) — Canonical version pins as of 2026-05-09 review.
