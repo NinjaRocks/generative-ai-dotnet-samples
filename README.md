@@ -1,5 +1,5 @@
-# Generative AI in .NET -- Companion Code
-
+# From Problems to Patterns: Generative AI in .NET -- Companion Code
+> Build Next-Level AI Applications, Agents, and Tools with Microsoft's Modern Ecosystem
 <a href="https://www.amazon.co.uk/gp/product/B0H1718649">
   <img src="images/Gen-AI-eBook-Cover.jpg" alt="Generative AI in .NET" width="250" align="right" />
 </a>
