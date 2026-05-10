@@ -1,8 +1,12 @@
 # Generative AI in .NET -- Companion Code
 
+<a href="https://www.amazon.co.uk/gp/product/B0H1718649">
+  <img src="images/Gen-AI-eBook-Cover.jpg" alt="Generative AI in .NET" width="250" align="right" />
+</a>
+
 [![CI](https://github.com/CodeShayk/generative-ai-dotnet-samples/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/CodeShayk/generative-ai-dotnet-samples/actions/workflows/ci.yml)
 
-Runnable code samples for **Generative AI in .NET** by Najaf Shaikh.
+Runnable code samples for **Generative AI in .NET** by Najaf A. Shaikh.
 
 Every sample in this repo corresponds to a section of the printed book. The full book-to-code map lives in [`docs/citation-index.md`](docs/citation-index.md). When the book condenses a section in favor of pointing here, the manuscript cites a **tag** (e.g. `v1.0-first-print`) so the cited code matches the print run -- `master` will drift as the surrounding APIs evolve.
 
